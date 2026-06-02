@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>呼嚕呼嚕南京東路共生公寓 - 生活機能地圖</title>
+  
+  <!-- Google Fonts: Inter & Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+  <div class="app-container">
+    <!-- Sidebar / Control Panel -->
+    <aside class="sidebar">
+      <header class="sidebar-header">
+        <div class="logo-area">
+          <i data-lucide="map-pin" class="logo-icon"></i>
+          <h1 style="font-size: 0.95rem; line-height: 1.2;">呼嚕呼嚕南京東路共生公寓<br><span style="font-size: 0.75rem; font-weight: normal; opacity: 0.7;">生活機能地圖</span></h1>
+        </div>
+        <button id="theme-toggle" class="btn-icon" title="切換主題">
+          <i data-lucide="sun" class="sun-icon"></i>
+          <i data-lucide="moon" class="moon-icon"></i>
+        </button>
+      </header>
+
+      <!-- Address Input -->
+      <section class="section search-section">
+        <div class="search-box">
+          <input type="text" id="address-input" placeholder="請輸入地址..." value="105台灣臺北市松山區東勢里南京東路四段133巷8弄24號">
+          <button id="search-btn" class="btn-primary" title="搜尋定位">
+            <i data-lucide="search"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- Settings / Radius & Reload -->
+      <section class="section settings-section">
+        <div class="setting-row">
+          <label for="radius-select"><i data-lucide="compass"></i> 搜尋半徑</label>
+          <select id="radius-select" class="form-select">
+            <option value="500" selected>500 公尺 (步行約 6 分鐘)</option>
+            <option value="1000">1 公里 (步行約 12 分鐘)</option>
+            <option value="1500">1.5 公里 (步行約 18 分鐘)</option>
+            <option value="2000">2 公里 (步行約 25 分鐘)</option>
+          </select>
+        </div>
+        <button id="refresh-btn" class="btn-refresh">
+          <i data-lucide="refresh-cw"></i> 重新載入周邊資料
+        </button>
+      </section>
+
+      <!-- Categories Filters -->
+      <section class="section filters-section">
+        <h2><i data-lucide="filter"></i> 機能分類篩選</h2>
+        <div class="filter-grid">
+          <!-- Convenience Store -->
+          <label class="filter-card active" data-category="convenience" style="--card-color: #22c55e;">
+            <input type="checkbox" checked id="filter-convenience">
+            <span class="card-icon"><i data-lucide="store"></i></span>
+            <span class="card-label">便利商店</span>
+            <span class="card-count" id="count-convenience">0</span>
+          </label>
+          
+          <!-- Supermarket -->
+          <label class="filter-card active" data-category="supermarket" style="--card-color: #f97316;">
+            <input type="checkbox" checked id="filter-supermarket">
+            <span class="card-icon"><i data-lucide="shopping-bag"></i></span>
+            <span class="card-label">全聯/家樂福</span>
+            <span class="card-count" id="count-supermarket">0</span>
+          </label>
+
+          <!-- Pharmacy -->
+          <label class="filter-card active" data-category="pharmacy" style="--card-color: #3b82f6;">
+            <input type="checkbox" checked id="filter-pharmacy">
+            <span class="card-icon"><i data-lucide="pill"></i></span>
+            <span class="card-label">藥局</span>
+            <span class="card-count" id="count-pharmacy">0</span>
+          </label>
+
+          <!-- Cosmetics -->
+          <label class="filter-card active" data-category="cosmetics" style="--card-color: #ec4899;">
+            <input type="checkbox" checked id="filter-cosmetics">
+            <span class="card-icon"><i data-lucide="sparkles"></i></span>
+            <span class="card-label">連鎖藥妝</span>
+            <span class="card-count" id="count-cosmetics">0</span>
+          </label>
+
+          <!-- Restaurant -->
+          <label class="filter-card active" data-category="restaurant" style="--card-color: #eab308;">
+            <input type="checkbox" checked id="filter-restaurant">
+            <span class="card-icon"><i data-lucide="utensils"></i></span>
+            <span class="card-label">餐廳美食</span>
+            <span class="card-count" id="count-restaurant">0</span>
+          </label>
+
+          <!-- MRT Station -->
+          <label class="filter-card active" data-category="mrt" style="--card-color: #0ea5e9;">
+            <input type="checkbox" checked id="filter-mrt">
+            <span class="card-icon"><i data-lucide="subway"></i></span>
+            <span class="card-label">捷運地鐵</span>
+            <span class="card-count" id="count-mrt">0</span>
+          </label>
+
+          <!-- Bus Stop -->
+          <label class="filter-card active" data-category="bus" style="--card-color: #0d9488;">
+            <input type="checkbox" checked id="filter-bus">
+            <span class="card-icon"><i data-lucide="bus"></i></span>
+            <span class="card-label">公車乘車</span>
+            <span class="card-count" id="count-bus">0</span>
+          </label>
+
+          <!-- Gas Station -->
+          <label class="filter-card active" data-category="fuel" style="--card-color: #a855f7;">
+            <input type="checkbox" checked id="filter-fuel">
+            <span class="card-icon"><i data-lucide="fuel"></i></span>
+            <span class="card-label">加油站</span>
+            <span class="card-count" id="count-fuel">0</span>
+          </label>
+
+          <!-- Ubike Station -->
+          <label class="filter-card active" data-category="ubike" style="--card-color: #f59e0b;">
+            <input type="checkbox" checked id="filter-ubike">
+            <span class="card-icon"><i data-lucide="bike"></i></span>
+            <span class="card-label">YouBike 站點</span>
+            <span class="card-count" id="count-ubike">0</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Results List -->
+      <section class="section list-section">
+        <div class="list-header">
+          <h2><i data-lucide="list"></i> 周邊地點清單</h2>
+          <span class="total-label" id="total-results">共 0 筆</span>
+        </div>
+        <div id="results-list" class="results-list">
+          <!-- Dynamically populated -->
+          <div class="list-placeholder">
+            <i data-lucide="loader-2" class="spin"></i>
+            <p>正在載入周邊機能地標...</p>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+    <!-- Map Area -->
+    <main class="map-container">
+      <div id="map"></div>
+      
+      <!-- Geolocation loading status -->
+      <div id="status-overlay" class="status-overlay hidden">
+        <div class="status-card">
+          <i data-lucide="loader-2" class="spin"></i>
+          <span id="status-text">定位中...</span>
+        </div>
+      </div>
+
+      <!-- Quick stats floating panel -->
+      <div class="floating-panel">
+        <div class="stat-item" id="stat-convenience-closest">
+          <i data-lucide="store" style="color: #22c55e;"></i>
+          <div>
+            <span class="stat-title">最近超商</span>
+            <span class="stat-val">計算中...</span>
+          </div>
+        </div>
+        <div class="stat-item" id="stat-supermarket-closest">
+          <i data-lucide="shopping-bag" style="color: #f97316;"></i>
+          <div>
+            <span class="stat-title">最近量販</span>
+            <span class="stat-val">計算中...</span>
+          </div>
+        </div>
+        <div class="stat-item" id="stat-pharmacy-closest">
+          <i data-lucide="pill" style="color: #3b82f6;"></i>
+          <div>
+            <span class="stat-title">最近藥局</span>
+            <span class="stat-val">計算中...</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+  
+  <!-- Custom Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
