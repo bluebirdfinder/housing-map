@@ -1,5 +1,5 @@
 /**
- * 租屋處生活機能地圖 - 主核心程式
+ * 呼嚕呼嚕共生公寓生活機能地圖 - 主核心程式
  */
 
 // 1. 全域變態與預設設定
@@ -38,7 +38,7 @@ const CATEGORIES = {
   center: {
     color: '#ef4444',
     icon: 'home',
-    label: '租屋共生公寓'
+    label: '共生公寓中心點'
   },
   convenience: {
     color: '#22c55e',
@@ -203,7 +203,7 @@ async function loadLocationData(coords) {
   currentCoords = coords;
   showStatus('正在抓取周邊生活機能資料與 YouBike 即時數據...');
 
-  // 更新地圖中心與租屋處標記
+  // 更新地圖中心與共生公寓標記
   updateCenterMarker(coords);
 
   try {
@@ -345,7 +345,7 @@ function updateCenterMarker(coords) {
   centerMarker = L.marker(coords, { icon: homeIcon }).addTo(map);
   centerMarker.bindPopup(`
     <div style="font-family: var(--font-family);">
-      <div class="popup-title">📍 呼嚕呼嚕南京東路共生公寓 (我的租屋處)</div>
+      <div class="popup-title">📍 呼嚕呼嚕南京東路共生公寓</div>
       <div class="popup-detail" style="font-size: 0.85rem; color: var(--text-secondary);">
         臺北市松山區南京東路四段133巷8弄24號<br>
         緯度: ${coords[0].toFixed(5)} / 經度: ${coords[1].toFixed(5)}
@@ -745,7 +745,7 @@ function parseOverpassJSON(data) {
   return results;
 }
 
-// 13.5. 針對租屋處商圈特定店家，以 Google Maps 資訊進行精確覆寫 (覆寫範圍擴大至 1 公里)
+// 13.5. 針對共生公寓商圈特定店家，以 Google Maps 資訊進行精確覆寫 (覆寫範圍擴大至 1 公里)
 function applyLocalBranchOverrides(poi, matchedStreet, lat, lon) {
   const nameLower = poi.name.toLowerCase();
   const matchedStreetStr = matchedStreet || '';
