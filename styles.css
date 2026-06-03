@@ -756,3 +756,46 @@ body {
     padding: 2px 4px;
   }
 }
+
+/* 當電腦版螢幕高度較矮時 (例如筆電螢幕或縮小視窗)，啟用高度自適應緊湊排版 */
+@media (max-height: 850px) and (min-width: 901px) {
+  .sidebar {
+    overflow-y: auto; /* 允許側邊欄在高度極端不夠時捲動 */
+  }
+  .sidebar-header {
+    padding: 10px 16px;
+  }
+  .section {
+    padding: 8px 16px;
+  }
+  .filter-grid {
+    gap: 6px;
+  }
+  .filter-card {
+    padding: 6px 10px;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    min-height: 38px;
+  }
+  .filter-card input[type="checkbox"] {
+    position: static;
+    margin-right: 0;
+    accent-color: var(--card-color);
+  }
+  .card-icon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 0;
+    font-size: 0.85rem;
+  }
+  .card-label {
+    font-size: 0.8rem;
+  }
+  .card-count {
+    font-size: 1rem;
+    margin-top: 0;
+    margin-left: auto; /* 將計數推到最右側 */
+  }
+}
+
